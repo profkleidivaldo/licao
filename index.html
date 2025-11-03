@@ -67,71 +67,50 @@ h1 {
 </head>
 <body>
 <h1>Lições de Fé no livro de Josué</h1>
-<div class="timeline">
+<div class="timeline" id="timeline"></div>
 
-        <div class="step" style="animation-delay:0s"> 
-          <div class="circle">1</div>
-          <div class="content">
-            <h3>Receita para o sucesso</h3>
-            <a href="https://codepen.io/kleidivaldo-souza-rodrigues/full/RNrgJOM" target="_blank">▶ Acessar aula</a>
-          </div>
-        </div>
-        <div class="step" style="animation-delay:0.2s"> 
-          <div class="circle">2</div>
-          <div class="content">
-            <h3>Surpreendidos pela Graça</h3>
-            <a href="https://codepen.io/kleidivaldo-souza-rodrigues/full/yyegvdb" target="_blank">▶ Acessar aula</a>
-          </div>
-        </div>
-        <div class="step" style="animation-delay:0.4s"> 
-          <div class="circle">3</div>
-          <div class="content">
-            <h3>Memoriais da Graça</h3>
-            <a href="https://codepen.io/kleidivaldo-souza-rodrigues/full/zxrzPJP" target="_blank">▶ Acessar aula</a>
-          </div>
-        </div>
-   <div class="step" style="animation-delay:0.4s"> 
-          <div class="circle">4</div>
-          <div class="content">
-            <h3>O Conflito por Trás de Todos os Conflitos</h3>
-            <a href="https://codepen.io/kleidivaldo-souza-rodrigues/full/vELJYoP" target="_blank">▶ Acessar aula</a>
-          </div>
-        </div>
-  <div class="step" style="animation-delay:0.4s"> 
-          <div class="circle">5</div>
-          <div class="content">
-            <h3>Deus luta por vocês</h3>
-            <a href="https://codepen.io/kleidivaldo-souza-rodrigues/full/ogbegxm" target="_blank">▶ Acessar aula</a>
-          </div>
-        </div>
-   <div class="step" style="animation-delay:0.4s"> 
-          <div class="circle">6</div>
-          <div class="content">
-            <h3>O inimigo interno</h3>
-            <a href="https://codepen.io/kleidivaldo-souza-rodrigues/full/xbZLaGW" target="_blank">▶ Acessar aula</a>
-          </div>
-        </div>
-  <div class="step" style="animation-delay:0.4s"> 
-          <div class="circle">7</div>
-          <div class="content">
-            <h3>Lealdade suprema: entusiasmo em zona de guerra</h3>
-            <a href="https://codepen.io/kleidivaldo-souza-rodrigues/full/xbZYyQa"target="_blank">▶ Acessar aula</a>
-          </div>
-        </div>
-  <div class="step" style="animation-delay:0.4s"> 
-          <div class="circle">8</div>
-          <div class="content">
-            <h3>Gigantes da fé: Josué e Calebe</h3>
-            <a href="https://codepen.io/kleidivaldo-souza-rodrigues/full/jEWZQbG"target="_blank">▶ Acessar aula</a>
-          </div>
-        </div>
-  <div class="step" style="animation-delay:0.4s"> 
-          <div class="circle">9</div>
-          <div class="content">
-            <h3>Herdeiros das promessas, prisioneiros da esperança</h3>
-            <a href="https://codepen.io/kleidivaldo-souza-rodrigues/full/KwVeQmL"target="_blank">▶ Acessar aula</a>
-          </div>
-        </div>
-</div>
+<script>
+// === CONFIGURAÇÃO ===
+const usuario = "profkleidivaldo";
+const repositorio = "licao";
+const pasta = "licoes";
+
+// === FUNÇÃO PRINCIPAL ===
+fetch(`https://api.github.com/repos/${usuario}/${repositorio}/contents/${pasta}`)
+  .then(r => r.json())
+  .then(arquivos => {
+    const timeline = document.getElementById("timeline");
+    let contador = 1;
+    arquivos
+      .filter(a => a.name.endsWith(".html"))
+      .sort((a,b) => a.name.localeCompare(b.name, 'pt', { numeric: true }))
+      .forEach((a, i) => {
+        const step = document.createElement("div");
+        step.className = "step";
+        step.style.animationDelay = `${i * 0.2}s`;
+
+        const circle = document.createElement("div");
+        circle.className = "circle";
+        circle.textContent = contador++;
+
+        const content = document.createElement("div");
+        content.className = "content";
+        const titulo = a.name.replace(".html", "").replace(/[-_]/g, " ");
+        content.innerHTML = `
+          <h3>${titulo}</h3>
+          <a href="${pasta}/${a.name}" target="_blank">▶ Acessar aula</a>
+        `;
+
+        step.appendChild(circle);
+        step.appendChild(content);
+        timeline.appendChild(step);
+      });
+  })
+  .catch(err => {
+    document.getElementById("timeline").innerHTML = 
+      "<p style='background:white;padding:10px;border-radius:6px;'>Erro ao carregar as lições. Verifique o nome da pasta ou repositório.</p>";
+    console.error(err);
+  });
+</script>
 </body>
 </html>
